@@ -99,9 +99,6 @@ jobs:
         run: |
           ./install
 
-      - name: Setup tmate session (I am so done with this)
-        uses: mxschmitt/action-tmate@v3.18
-
       - name: Fix Compilation & Build IPA
         id: build_package
         working-directory: ${{ github.workspace }}/main
