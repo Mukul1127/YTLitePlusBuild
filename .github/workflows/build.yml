@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.1.6
+        uses: actions/checkout@v4.1.7
         with:
           repository: YTLitePlus/YTLitePlus
           ref: ${{ inputs.ytliteplus_version }}
@@ -65,7 +65,7 @@ jobs:
 
       - name: Setup Theos
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v4.1.6
+        uses: actions/checkout@v4.1.7
         with:
           repository: theos/theos
           path: theos
@@ -73,7 +73,7 @@ jobs:
 
       - name: Setup iOS SDK
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v4.1.6
+        uses: actions/checkout@v4.1.7
         with:
           repository: theos/sdks
           path: theos/sdks
@@ -88,7 +88,7 @@ jobs:
           key: ${{ env.upstream_heads }}
 
       - name: Setup Theos Jailed
-        uses: actions/checkout@v4.1.6
+        uses: actions/checkout@v4.1.7
         with:
           repository: qnblackcat/theos-jailed
           path: theos-jailed
