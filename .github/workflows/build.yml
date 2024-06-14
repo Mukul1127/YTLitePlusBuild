@@ -109,7 +109,7 @@ jobs:
 
           sed -i '' "1s#.*#TARGET := iphone:clang:16.5:14.0#g" Tweaks/YTHoldForSpeed/Makefile
           
-          gmake IPA=tmp/Payload/YouTube.app FINALPACKAGE=1
+          gmake package
 
       - name: Create Draft Release
         uses: softprops/action-gh-release@v2.0.5
