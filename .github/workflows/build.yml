@@ -109,8 +109,8 @@ jobs:
           sed -i '' "s|iphone:clang:16.2:14.0|iphone:clang:16.5:14.0|g" Makefile
 
           sed -i '' "s|iphone:latest:15.0|iphone:16.5:15.0|g" Tweaks/Alderis/Makefile
-          sed -i '' "s|iphone:13.7:12.0|iphone:16.5:12.0|g" Tweaks/Alderis/Makefile
-          sed -i '' "s|iphone:latest:12.0|iphone:16.5:12.0|g" Tweaks/Alderis/Makefile
+          sed -i '' "s|iphone:13.7:12.0|iphone:16.5:14.0|g" Tweaks/Alderis/Makefile
+          sed -i '' "s|iphone:latest:12.0|iphone:16.5:14.0|g" Tweaks/Alderis/Makefile
 
           sed -i '' "s|iphone:clang:16.2:14.0|iphone:clang:16.5:14.0|g" Tweaks/YTHoldForSpeed/Makefile
           
