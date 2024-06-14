@@ -96,6 +96,7 @@ jobs:
           ./install
 
       - name: Fix Compilation & Build IPA
+        id: build_package
         working-directory: ${{ github.workspace }}/main
         run: |
           sed -i '' "s/^PACKAGE_VERSION.*$/PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ env.YTLITE_VERSION }}/" Makefile
@@ -110,6 +111,9 @@ jobs:
           
           gmake FINALPACKAGE=1
 
+          (mv "packages/$(ls -t packages | head -n1)" "packages/YTLitePlus_${{ env.YT_VERSION }}_${{ env.YTLITE_VERSION }}.ipa")        
+          echo "package=$(ls -t packages | head -n1)" >>$GITHUB_OUTPUT
+
       - name: Create Draft Release
         uses: softprops/action-gh-release@v2.0.5
         env:
@@ -117,5 +121,5 @@ jobs:
         with:
           tag_name: (v${{ env.YT_VERSION }})-(${{ env.YTLITE_VERSION }})-(${{ github.run_number }})
           name: (v${{ env.YT_VERSION }})-(${{ env.YTLITE_VERSION }})-(${{ github.run_number }})
-          files: main/packages/*.ipa
+          files: ${{ github.workspace }}/main/packages/${{ steps.build_package.outputs.package }}
           draft: true
