@@ -45,9 +45,9 @@ jobs:
           unzip -q YouTube.ipa -d tmp
           echo "YT_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
           
-          rm -rf main/tmp/Payload/YouTube.app/_CodeSignature/CodeResources
-          rm -rf main/tmp/Payload/YouTube.app/PlugIns/*
-          cp -R main/Extensions/*.appex main/tmp/Payload/YouTube.app/PlugIns
+          rm -rf tmp/Payload/YouTube.app/_CodeSignature/CodeResources
+          rm -rf tmp/Payload/YouTube.app/PlugIns/*
+          cp -R Extensions/*.appex tmp/Payload/YouTube.app/PlugIns
     
       - name: Install Dependencies
         run: brew install ldid make
