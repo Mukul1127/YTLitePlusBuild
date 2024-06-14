@@ -106,6 +106,9 @@ jobs:
           sed -i '' "s/^PACKAGE_VERSION.*$/PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ env.YTLITE_VERSION }}/" Makefile
           
           gmake package
+  
+      - name: Setup tmate session (I am so done with this)
+        uses: mxschmitt/action-tmate@v3.18
 
       - name: Create Draft Release
         uses: softprops/action-gh-release@v2.0.5
