@@ -99,6 +99,8 @@ jobs:
         working-directory: ${{ github.workspace }}/main
         run: |
           sed -i '' "s/^PACKAGE_VERSION.*$/PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ env.YTLITE_VERSION }}/" Makefile
+
+          sed -i '' "1s#.*#TARGET = iphone:clang:16.5:14.0#g" Makefile
           
           gmake package FINALPACKAGE=1
 
