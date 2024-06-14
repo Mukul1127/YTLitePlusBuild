@@ -106,7 +106,8 @@ jobs:
         id: build_package
         working-directory: ${{ github.workspace }}/main
         run: |
-          sed -i '' "s/^PACKAGE_VERSION.*$/PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ env.YTLITE_VERSION }}/" Makefile
+          sed -i "s|X.X.X-X.X|${{ env.YT_VERSION }}-${{ env.YTLITE_VERSION }}|g" Makefile
+          sed -i 's|.theos/obj/install/|.theos/obj/install_Alderis/|g' Makefile
           
           gmake package
 
