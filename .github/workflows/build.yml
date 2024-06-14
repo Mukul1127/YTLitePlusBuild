@@ -100,7 +100,9 @@ jobs:
         run: |
           sed -i '' "s/^PACKAGE_VERSION.*$/PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ env.YTLITE_VERSION }}/" Makefile
 
-          sed -i '' "1s#.*#TARGET = iphone:clang:16.5:14.0#g" Makefile
+          sed -i '' "3s#.*#export TARGET = iphone:clang:16.5:15.0#g" Tweaks/Alderis/Makefile
+          sed -i '' "5s#.*#export TARGET = iphone:clang:16.5:12.0#g" Tweaks/Alderis/Makefile
+          sed -i '' "7s#.*#export TARGET = iphone:clang:16.5:12.0#g" Tweaks/Alderis/Makefile
           
           gmake package FINALPACKAGE=1
 
