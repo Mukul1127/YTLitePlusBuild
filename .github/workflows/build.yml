@@ -108,7 +108,7 @@ jobs:
 
           sed -i '' "1s#.*#TARGET := iphone:clang:16.5:14.0#g" Tweaks/YTHoldForSpeed/Makefile
           
-          gmake package FINALPACKAGE=1
+          gmake package THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1
 
       - name: Create Draft Release
         uses: softprops/action-gh-release@v2.0.5
