@@ -22,7 +22,7 @@ on:
 jobs:
   build:
     name: Build YTLitePlus
-    runs-on: macos-latest
+    runs-on: macos-12
     permissions:
       contents: write
     env:
@@ -105,16 +105,6 @@ jobs:
         run: |
           sed -i "" "s|X.X.X-X.X|${{ env.YT_VERSION }}-${{ env.YTLITE_VERSION }}|g" Makefile
           sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
-
-          sed -i "" "s|iphone:clang:16.2:14.0|iphone:clang:16.5:14.0|g" Makefile
-
-          sed -i "" "s|iphone:latest:15.0|iphone:16.5:15.0|g" Tweaks/Alderis/Makefile
-          sed -i "" "s|iphone:13.7:12.0|iphone:16.5:12.0|g" Tweaks/Alderis/Makefile
-          sed -i "" "s|iphone:latest:12.0|iphone:16.5:12.0|g" Tweaks/Alderis/Makefile
-
-          sed -i "" "s|iphone:clang:16.2:14.0|iphone:clang:16.5:14.0|g" Tweaks/YTHoldForSpeed/Makefile
-
-          sed -i "" "46,48d" Makefile
           
           gmake package
 
