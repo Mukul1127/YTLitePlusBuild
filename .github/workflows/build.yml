@@ -27,7 +27,6 @@ jobs:
       contents: write
     env:
       THEOS: ${{ github.workspace }}/theos
-      YTLITE_VERSION: ${{ inputs.ytlite_version }}
 
     steps:
       - name: Checkout Repository
@@ -43,15 +42,18 @@ jobs:
         run: |
           wget "${{ inputs.decrypted_youtube_url }}" --no-verbose -O YouTube.ipa
           unzip -q YouTube.ipa -d tmp
+          
           echo "YT_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
           
           rm -rf tmp/Payload/YouTube.app/_CodeSignature/CodeResources
           rm -rf tmp/Payload/YouTube.app/PlugIns/*
           cp -R Extensions/*.appex tmp/Payload/YouTube.app/PlugIns
+
+          sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ inputs.ytlite_version }}|g" Makefile
     
       - name: Install Dependencies
         run: brew install ldid make
-
+        
       - name: Check cache
         run: |
           echo upstream_heads=`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1` >> $GITHUB_ENV
@@ -80,7 +82,7 @@ jobs:
           sparse-checkout: "iPhoneOS16.5.sdk"
           sparse-checkout-cone-mode: false
 
-      - name: Save cache if available
+      - name: Save cache if needed
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4.0.2
         with:
@@ -103,17 +105,16 @@ jobs:
         id: build_package
         working-directory: ${{ github.workspace }}/main
         run: |
-          sed -i "" "s|X.X.X-X.X|${{ env.YT_VERSION }}-${{ env.YTLITE_VERSION }}|g" Makefile
           sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
           
           gmake package
 
       - name: Create Draft Release
-        uses: softprops/action-gh-release@v2.0.5
+        uses: softprops/action-gh-release@v2.0.6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: (v${{ env.YT_VERSION }})-(${{ env.YTLITE_VERSION }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
-          name: (v${{ env.YT_VERSION }})-(${{ env.YTLITE_VERSION }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
+          tag_name: (v${{ env.YT_VERSION }})-(${{ inputs.ytlite_version }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
+          name: (v${{ env.YT_VERSION }})-(${{ inputs.ytlite_version }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
           files: main/packages/*.ipa
           draft: true
