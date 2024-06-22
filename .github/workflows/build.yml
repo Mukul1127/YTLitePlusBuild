@@ -105,7 +105,6 @@ jobs:
         run: |
           sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ inputs.ytlite_version }}|g" Makefile
           sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
-          
           gmake package
 
       - name: Create Draft Release
