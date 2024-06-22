@@ -48,8 +48,6 @@ jobs:
           rm -rf tmp/Payload/YouTube.app/_CodeSignature/CodeResources
           rm -rf tmp/Payload/YouTube.app/PlugIns/*
           cp -R Extensions/*.appex tmp/Payload/YouTube.app/PlugIns
-
-          sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ inputs.ytlite_version }}|g" Makefile
     
       - name: Install Dependencies
         run: brew install ldid make
@@ -101,10 +99,11 @@ jobs:
         run: |
           ./install
 
-      - name: Fix Compilation & Build IPA
+      - name: Update Makefile & Build IPA
         id: build_package
         working-directory: ${{ github.workspace }}/main
         run: |
+          sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ inputs.ytlite_version }}|g" Makefile
           sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
           
           gmake package
