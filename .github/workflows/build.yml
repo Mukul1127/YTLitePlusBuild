@@ -43,7 +43,7 @@ jobs:
           wget "${{ inputs.decrypted_youtube_url }}" --no-verbose -O YouTube.ipa
           unzip -q YouTube.ipa -d tmp
 
-          echo "YT_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
+          echo "YOUTUBE_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
 
           rm -rf tmp/Payload/YouTube.app/_CodeSignature/CodeResources
           rm -rf tmp/Payload/YouTube.app/PlugIns/*
@@ -101,7 +101,7 @@ jobs:
       - name: 📦 Build IPA
         working-directory: ${{ github.workspace }}/main
         run: |
-          sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ inputs.ytlite_version }}|g" Makefile
+          sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YOUTUBE_VERSION }}-${{ inputs.ytlite_version }}|g" Makefile
           sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
           gmake package
 
@@ -110,7 +110,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: (v${{ env.YT_VERSION }})-(${{ inputs.ytlite_version }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
-          name: (v${{ env.YT_VERSION }})-(${{ inputs.ytlite_version }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
+          tag_name: (v${{ env.YOUTUBE_VERSION }})-(${{ inputs.ytlite_version }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
+          name: (v${{ env.YOUTUBE_VERSION }})-(${{ inputs.ytlite_version }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
           files: main/packages/*.ipa
           draft: true
