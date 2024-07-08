@@ -57,14 +57,14 @@ jobs:
 
       - name: ♻️ Restore cache if available
         id: cache
-        uses: actions/cache/restore@v4.0.2
+        uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ${{ github.workspace }}/theos
           key: ${{ env.upstream_heads }}
 
       - name: ⚙️ Setup Theos
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           repository: theos/theos
           path: theos
@@ -72,7 +72,7 @@ jobs:
 
       - name: ⚙️ Setup iOS SDK
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           repository: theos/sdks
           path: theos/sdks
@@ -81,13 +81,13 @@ jobs:
 
       - name: ♻️ Save cache if needed
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4.0.2
+        uses: actions/cache/save@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ${{ github.workspace }}/theos
           key: ${{ env.upstream_heads }}
 
       - name: ⚙️ Setup Theos Jailed
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           repository: qnblackcat/theos-jailed
           path: theos-jailed
@@ -105,7 +105,7 @@ jobs:
           gmake package
 
       - name: 🚀 Publish Draft Release
-        uses: softprops/action-gh-release@v2.0.6
+        uses: softprops/action-gh-release@a74c6b72af54cfa997e81df42d94703d6313a2d0 # v2.0.6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
