@@ -101,6 +101,7 @@ jobs:
         working-directory: ${{ github.workspace }}/main
         run: |
           sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YOUTUBE_VERSION }}-${{ inputs.ytlite_version }}|g" Makefile
+          sed -i "" "s|YTLITE_VERSION := $(shell wget -qO- "https://github.com/dayanch96/YTLite/releases/latest" | grep -o -E '/tag/v[^"]+' | head -n 1 | sed 's/\/tag\/v//')|YTLITE_VERSION := ${{ inputs.ytlite_version }}|g" Makefile
           sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
           gmake package
 
