@@ -95,8 +95,7 @@ jobs:
 
       - name: 💾 Install Theos Jailed
         working-directory: ${{ github.workspace }}/theos-jailed
-        run: |
-          ./install
+        run: ./install
 
       - name: 📦 Build IPA
         working-directory: ${{ github.workspace }}/main
