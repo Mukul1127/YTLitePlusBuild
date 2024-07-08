@@ -3,20 +3,20 @@ name: Build YTLitePlus
 on:
   workflow_dispatch:
     inputs:
-      decrypted_youtube_url:
+      DECRYPTED_YOUTUBE_URL:
         description: "The *decrypted* YouTube ipa (Provide Direct Download Link)."
         default: ""
         required: true
         type: string
-      ytlite_version:
+      YTLITE_VERSION:
         description: "The version of YTLite to inject (Provide Number)"
         default: "4.0.1"
         required: true
         type: string
-      ytliteplus_version:
+      YTLITEPLUS_VERSION:
         description: "The version of YTLitePlus to inject (Provide *FULL* SHA, Tag, or Branch)."
         default: "main"
-        required: true
+        required: false
         type: string
 
 jobs:
@@ -32,15 +32,15 @@ jobs:
       - name: 🚚 Check out the Repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
-          repository: driftywinds/uYouEnhanced
-          ref: ${{ inputs.uyouenhanced_version }}
+          repository: YTLitePlus/YTLitePlus
+          ref: ${{ inputs.YTLITEPLUS_VERSION || github.ref }}
           path: main
           submodules: recursive
 
       - name: 🛠️ Prepare YouTube IPA
         working-directory: ${{ github.workspace }}/main
         run: |
-          wget "${{ inputs.decrypted_youtube_url }}" --no-verbose -O YouTube.ipa
+          wget "${{ inputs.DECRYPTED_YOUTUBE_URL }}" --no-verbose -O YouTube.ipa
           unzip -q YouTube.ipa -d tmp
 
           echo "YOUTUBE_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
@@ -100,8 +100,8 @@ jobs:
       - name: 📦 Build IPA
         working-directory: ${{ github.workspace }}/main
         run: |
-          sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YOUTUBE_VERSION }}-${{ inputs.ytlite_version }}|g" Makefile
-          sed -i "" "s|YTLITE_VERSION := $(shell wget -qO- "https://github.com/dayanch96/YTLite/releases/latest" | grep -o -E '/tag/v[^"]+' | head -n 1 | sed 's/\/tag\/v//')|YTLITE_VERSION := ${{ inputs.ytlite_version }}|g" Makefile
+          sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YOUTUBE_VERSION }}-${{ inputs.YTLITE_VERSION }}|g" Makefile
+          sed -i "" "s|YTLITE_VERSION := $(shell wget -qO- "https://github.com/dayanch96/YTLite/releases/latest" | grep -o -E '/tag/v[^"]+' | head -n 1 | sed 's/\/tag\/v//')|YTLITE_VERSION := ${{ inputs.YTLITE_VERSION }}|g" Makefile
           sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
           gmake package
 
@@ -110,7 +110,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: (v${{ env.YOUTUBE_VERSION }})-(${{ inputs.ytlite_version }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
-          name: (v${{ env.YOUTUBE_VERSION }})-(${{ inputs.ytlite_version }})-(${{ inputs.ytliteplus_version }})-(${{ github.run_number }})
+          tag_name: (v${{ env.YOUTUBE_VERSION }})-(${{ inputs.YTLITE_VERSION }})-(${{ inputs.YTLITEPLUS_VERSION }})-(${{ github.run_number }})
           files: main/packages/*.ipa
           draft: true
