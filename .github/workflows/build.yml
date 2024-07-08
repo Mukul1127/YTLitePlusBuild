@@ -29,41 +29,40 @@ jobs:
       THEOS: ${{ github.workspace }}/theos
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4.1.7
+      - name: 🚚 Check out the Repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
-          repository: YTLitePlus/YTLitePlus
-          ref: ${{ inputs.ytliteplus_version }}
+          repository: driftywinds/uYouEnhanced
+          ref: ${{ inputs.uyouenhanced_version }}
           path: main
           submodules: recursive
 
-      - name: Prepare YouTube IPA
+      - name: 🛠️ Prepare YouTube IPA
         working-directory: ${{ github.workspace }}/main
         run: |
           wget "${{ inputs.decrypted_youtube_url }}" --no-verbose -O YouTube.ipa
           unzip -q YouTube.ipa -d tmp
-          
+
           echo "YT_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
-          
+
           rm -rf tmp/Payload/YouTube.app/_CodeSignature/CodeResources
           rm -rf tmp/Payload/YouTube.app/PlugIns/*
           cp -R Extensions/*.appex tmp/Payload/YouTube.app/PlugIns
-    
-      - name: Install Dependencies
+
+      - name: 💾 Install System Dependencies
         run: brew install ldid make
 
-      - name: Check cache
-        run: |
-          echo upstream_heads=`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1` >> $GITHUB_ENV
+      - name: 🔍 Check cache
+        run: echo upstream_heads=`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1` >> $GITHUB_ENV
 
-      - name: Restore cache if available
+      - name: ♻️ Restore cache if available
         id: cache
         uses: actions/cache/restore@v4.0.2
         with:
           path: ${{ github.workspace }}/theos
           key: ${{ env.upstream_heads }}
 
-      - name: Setup Theos
+      - name: ⚙️ Setup Theos
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4.1.7
         with:
@@ -71,7 +70,7 @@ jobs:
           path: theos
           submodules: recursive
 
-      - name: Setup iOS SDK
+      - name: ⚙️ Setup iOS SDK
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4.1.7
         with:
@@ -80,34 +79,33 @@ jobs:
           sparse-checkout: "iPhoneOS16.5.sdk"
           sparse-checkout-cone-mode: false
 
-      - name: Save cache if needed
+      - name: ♻️ Save cache if needed
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4.0.2
         with:
           path: ${{ github.workspace }}/theos
           key: ${{ env.upstream_heads }}
 
-      - name: Setup Theos Jailed
+      - name: ⚙️ Setup Theos Jailed
         uses: actions/checkout@v4.1.7
         with:
           repository: qnblackcat/theos-jailed
           path: theos-jailed
           submodules: true
 
-      - name: Install Theos Jailed
+      - name: 💾 Install Theos Jailed
         working-directory: ${{ github.workspace }}/theos-jailed
         run: |
           ./install
 
-      - name: Update Makefile & Build IPA
-        id: build_package
+      - name: 📦 Build IPA
         working-directory: ${{ github.workspace }}/main
         run: |
           sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YT_VERSION }}-${{ inputs.ytlite_version }}|g" Makefile
           sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
           gmake package
 
-      - name: Create Draft Release
+      - name: 🚀 Publish Draft Release
         uses: softprops/action-gh-release@v2.0.6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
