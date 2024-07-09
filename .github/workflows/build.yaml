@@ -94,11 +94,11 @@ jobs:
           submodules: true
 
       - name: 💾 Install Theos Jailed
-        working-directory: ${{ github.workspace }}/theos-jailed
+        working-directory: theos-jailed
         run: ./install
 
       - name: 📦 Build IPA
-        working-directory: ${{ github.workspace }}/main
+        working-directory: main
         run: |
           sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YOUTUBE_VERSION }}-${{ inputs.YTLITE_VERSION }}|g" Makefile
           sed -i "" "s|YTLITE_VERSION := $(shell wget -qO- "https://github.com/dayanch96/YTLite/releases/latest" | grep -o -E '/tag/v[^"]+' | head -n 1 | sed 's/\/tag\/v//')|YTLITE_VERSION := ${{ inputs.YTLITE_VERSION }}|g" Makefile
