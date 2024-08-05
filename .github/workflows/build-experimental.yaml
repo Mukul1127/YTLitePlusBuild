@@ -109,11 +109,11 @@ jobs:
       - name: 📦 Build IPA
         working-directory: main
         run: |
-          sed -i "s|tar -xf $(YTLITE_DEB) -C $(YTLITE_PATH); tar -xf|ar x $(YTLITE_DEB) --output $(YTLITE_PATH); tar -xaf|g" Makefile
-          sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YOUTUBE_VERSION }}-${{ inputs.YTLITE_VERSION }}|g" Makefile
-          sed -i "" "s|YTLITE_VERSION := $(shell wget -qO- "https://github.com/dayanch96/YTLite/releases/latest" | grep -o -E '/tag/v[^"]+' | head -n 1 | sed 's/\/tag\/v//')|YTLITE_VERSION := ${{ inputs.YTLITE_VERSION }}|g" Makefile
-          sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
-          gmake package
+          sed -i "s|tar -xf \$(YTLITE_DEB) -C \$(YTLITE_PATH); tar -xf|ar x \$(YTLITE_DEB) --output \$(YTLITE_PATH); tar -xaf|g" Makefile
+          sed -i "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YOUTUBE_VERSION }}-${{ inputs.YTLITE_VERSION }}|g" Makefile
+          sed -i "s|YTLITE_VERSION := $(shell wget -qO- "https://github.com/dayanch96/YTLite/releases/latest" | grep -o -E '/tag/v[^"]+' | head -n 1 | sed 's/\/tag\/v//')|YTLITE_VERSION := ${{ inputs.YTLITE_VERSION }}|g" Makefile
+          sed -i "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
+          make package
 
       - name: 🚀 Publish Draft Release
         uses: softprops/action-gh-release@a74c6b72af54cfa997e81df42d94703d6313a2d0 # v2.0.6
