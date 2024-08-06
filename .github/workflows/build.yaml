@@ -1,4 +1,4 @@
-name: Build YTLitePlus
+name: YTLitePlus CI
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ on:
 jobs:
   build:
     name: Build YTLitePlus
-    runs-on: macos-12
+    runs-on: macos-latest
     permissions:
       contents: write
     env:
@@ -53,14 +53,15 @@ jobs:
         run: brew install ldid-procursus make
 
       - name: 🔍 Check cache
-        run: echo upstream_heads=`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/theos/sdks | head -n 1 | cut -f 1` >> $GITHUB_ENV
+        run: |
+          echo UPSTREAM_HEADS=`git ls-remote https://github.com/theos/theos | head -n 1 | cut -f 1`-`git ls-remote https://github.com/xybp888/iOS-SDKs | head -n 1 | cut -f 1` >> $GITHUB_ENV
 
       - name: ♻️ Restore cache if available
         id: cache
         uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ${{ github.workspace }}/theos
-          key: ${{ env.upstream_heads }}
+          key: ${{ env.UPSTREAM_HEADS }}
 
       - name: ⚙️ Setup Theos
         if: steps.cache.outputs.cache-hit != 'true'
@@ -74,9 +75,9 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
-          repository: theos/sdks
+          repository: xybp888/iOS-SDKs
           path: theos/sdks
-          sparse-checkout: "iPhoneOS16.5.sdk"
+          sparse-checkout: "iPhoneOS17.5.sdk"
           sparse-checkout-cone-mode: false
 
       - name: ♻️ Save cache if needed
@@ -84,7 +85,7 @@ jobs:
         uses: actions/cache/save@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ${{ github.workspace }}/theos
-          key: ${{ env.upstream_heads }}
+          key: ${{ env.UPSTREAM_HEADS }}
 
       - name: ⚙️ Setup Theos Jailed
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -95,11 +96,14 @@ jobs:
 
       - name: 💾 Install Theos Jailed
         working-directory: theos-jailed
-        run: ./install
+        run: |
+          ./install
 
       - name: 📦 Build IPA
         working-directory: main
         run: |
+          sed -i "" "s|iphone:clang:16.5:15.0|iphone:clang:17.5:15.0|g" Makefile
+          sed -i "" "s|iphone:clang:16.5:15.0|iphone:clang:17.5:15.0|g" Tweaks/YTHoldForSpeed/Makefile
           sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YOUTUBE_VERSION }}-${{ inputs.YTLITE_VERSION }}|g" Makefile
           sed -i "" "s|YTLITE_VERSION := $(shell wget -qO- "https://github.com/dayanch96/YTLite/releases/latest" | grep -o -E '/tag/v[^"]+' | head -n 1 | sed 's/\/tag\/v//')|YTLITE_VERSION := ${{ inputs.YTLITE_VERSION }}|g" Makefile
           sed -i "" "s|.theos/obj/install/|.theos/obj/install_Alderis/|g" Makefile
