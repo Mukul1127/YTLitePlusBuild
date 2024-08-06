@@ -103,7 +103,7 @@ jobs:
       - name: 📦 Build IPA
         working-directory: main
         run: |
-          sed -i "" "s|iphone:clang:16.5:15.0|iphone:clang:17.5:15.0|g" Makefile
+          sed -i "" "s|iphone:clang:16.5:14.0|iphone:clang:17.5:14.0|g" Makefile
           sed -i "" "s|iphone:clang:16.5:15.0|iphone:clang:17.5:15.0|g" Tweaks/YTHoldForSpeed/Makefile
           sed -i "" "s|PACKAGE_VERSION = X.X.X-X.X|PACKAGE_VERSION = ${{ env.YOUTUBE_VERSION }}-${{ inputs.YTLITE_VERSION }}|g" Makefile
           sed -i "" "s|YTLITE_VERSION := $(shell wget -qO- "https://github.com/dayanch96/YTLite/releases/latest" | grep -o -E '/tag/v[^"]+' | head -n 1 | sed 's/\/tag\/v//')|YTLITE_VERSION := ${{ inputs.YTLITE_VERSION }}|g" Makefile
