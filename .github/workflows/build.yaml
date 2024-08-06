@@ -50,7 +50,8 @@ jobs:
           cp -R Extensions/*.appex tmp/Payload/YouTube.app/PlugIns
 
       - name: 💾 Install System Dependencies
-        run: brew install ldid-procursus make
+        run: |
+          brew install ldid-procursus make
 
       - name: 🔍 Check cache
         run: |
