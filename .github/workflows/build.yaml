@@ -8,16 +8,6 @@ on:
         default: ""
         required: true
         type: string
-      YTLITE_VERSION:
-        description: "The version of YTLite to inject (Provide Number)"
-        default: "4.0.1"
-        required: true
-        type: string
-      YTLITEPLUS_VERSION:
-        description: "The version of YTLitePlus to inject (Provide *FULL* SHA, Tag, or Branch)."
-        default: "main"
-        required: true
-        type: string
 
 jobs:
   build:
@@ -33,7 +23,6 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           repository: YTLitePlus/YTLitePlus
-          ref: ${{ inputs.YTLITEPLUS_VERSION }}
           path: main
           submodules: recursive
 
@@ -43,6 +32,24 @@ jobs:
           wget "${{ inputs.DECRYPTED_YOUTUBE_URL }}" --no-verbose -O YouTube.zip
           unzip -q YouTube.zip -d tmp
           echo "YOUTUBE_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
+
+          python - <<EOF
+          import plistlib
+          def remove_uisupporteddevices(filepath):
+              with open(filepath, 'rb') as f:
+                  plist = plistlib.load(f)
+
+              if 'UISupportedDevices' in plist:
+                  del plist['UISupportedDevices']
+
+              with open(filepath, 'wb') as f:
+                  plistlib.dump(plist, f)
+
+          filepath = 'main/tmp/Payload/YouTube.app/Info.plist'
+          remove_uisupporteddevices(filepath)
+          EOF
+
+          cp -R main/Extensions/*.appex main/tmp/Payload/YouTube.app/PlugIns
 
       - name: 💾 Install System Dependencies
         run: |
@@ -104,7 +111,7 @@ jobs:
       - name: 🚀 Publish Draft Release
         uses: softprops/action-gh-release@9a28f2423fd7ba2781181bb13e8aba228027c4e9 # v2.0.8 + 5 Dependency Updates
         with:
-          tag_name: (v${{ env.YOUTUBE_VERSION }})-(${{ inputs.YTLITE_VERSION }})-(${{ inputs.YTLITEPLUS_VERSION }})-(${{ github.run_number }})
-          name: (v${{ env.YOUTUBE_VERSION }})-(${{ inputs.YTLITE_VERSION }})-(${{ inputs.YTLITEPLUS_VERSION }})-(${{ github.run_number }})
+          tag_name: ${{ github.run_number }}
+          name: ${{ github.run_number }}
           files: main/packages/*.ipa
           draft: true
