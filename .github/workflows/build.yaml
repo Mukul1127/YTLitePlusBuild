@@ -101,8 +101,13 @@ jobs:
           sed -i "" "s|iphone:latest:12.0|iphone:16.5:15.0|g" Tweaks/Alderis/Makefile
           gmake package
 
+      - name: Temporary Package as tar.xz
+        working-directory: main
+        run: |
+          tar -caf ../archive.tar.xz ./
+
       - name: 🚀 Publish Draft Release
         run: |
-          gh release create -t "(v${{ env.YOUTUBE_VERSION }})-(${{ inputs.YTLITE_VERSION }})-(${{ inputs.YTLITEPLUS_VERSION }})-(${{ github.run_number }})" main/* -d -R ${{ github.repository }}
+          gh release create -t "(v${{ env.YOUTUBE_VERSION }})-(${{ inputs.YTLITE_VERSION }})-(${{ inputs.YTLITEPLUS_VERSION }})-(${{ github.run_number }})" archive.tar.xz -d -R ${{ github.repository }}
         env:
           GH_TOKEN: ${{ github.token }}
