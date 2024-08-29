@@ -32,7 +32,7 @@ jobs:
       - name: 🚚 Check out the Repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
-          repository: YTLitePlus/YTLitePlus
+          repository: Mukul1127/YTLitePlus
           ref: ${{ inputs.YTLITEPLUS_VERSION }}
           path: main
           submodules: recursive
@@ -42,12 +42,7 @@ jobs:
         run: |
           wget "${{ inputs.DECRYPTED_YOUTUBE_URL }}" --no-verbose -O YouTube.zip
           unzip -q YouTube.zip -d tmp
-
           echo "YOUTUBE_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
-
-          rm -rf tmp/Payload/YouTube.app/_CodeSignature/CodeResources
-          rm -rf tmp/Payload/YouTube.app/PlugIns/*
-          cp -R Extensions/*.appex tmp/Payload/YouTube.app/PlugIns
 
       - name: 💾 Install System Dependencies
         run: |
