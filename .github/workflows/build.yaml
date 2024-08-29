@@ -32,24 +32,9 @@ jobs:
           wget "${{ inputs.DECRYPTED_YOUTUBE_URL }}" --no-verbose -O YouTube.zip
           unzip -q YouTube.zip -d tmp
           echo "YOUTUBE_VERSION=$(defaults read "$(pwd)/tmp/Payload/YouTube.app/Info" CFBundleVersion)" >> $GITHUB_ENV
-
-          python - <<EOF
-          import plistlib
-          def remove_uisupporteddevices(filepath):
-              with open(filepath, 'rb') as f:
-                  plist = plistlib.load(f)
-
-              if 'UISupportedDevices' in plist:
-                  del plist['UISupportedDevices']
-
-              with open(filepath, 'wb') as f:
-                  plistlib.dump(plist, f)
-
-          filepath = 'main/tmp/Payload/YouTube.app/Info.plist'
-          remove_uisupporteddevices(filepath)
-          EOF
-
-          cp -R main/Extensions/*.appex main/tmp/Payload/YouTube.app/PlugIns
+          rm -rf tmp/Payload/YouTube.app/_CodeSignature/CodeResources
+          rm -rf tmp/Payload/YouTube.app/PlugIns/*
+          cp -R Extensions/*.appex tmp/Payload/YouTube.app/PlugIns
 
       - name: 💾 Install System Dependencies
         run: |
