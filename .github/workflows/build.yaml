@@ -111,3 +111,13 @@ jobs:
           gh release create -t "(v${{ env.YOUTUBE_VERSION }})-(${{ inputs.YTLITE_VERSION }})-(${{ inputs.YTLITEPLUS_VERSION }})-(${{ github.run_number }})" archive.tar.xz -d -R ${{ github.repository }}
         env:
           GH_TOKEN: ${{ github.token }}
+
+      - name: 🚀 Publish Draft Release
+        uses: softprops/action-gh-release@9a28f2423fd7ba2781181bb13e8aba228027c4e9 # v2.0.8 + 5 Dependency Updates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: (v${{ env.YOUTUBE_VERSION }})-(${{ inputs.YTLITE_VERSION }})-(${{ inputs.YTLITEPLUS_VERSION }})-(${{ github.run_number }})
+          name: (v${{ env.YOUTUBE_VERSION }})-(${{ inputs.YTLITE_VERSION }})-(${{ inputs.YTLITEPLUS_VERSION }})-(${{ github.run_number }})
+          files: main/packages/*.ipa
+          draft: true
