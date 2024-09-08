@@ -90,6 +90,7 @@ jobs:
       - name: 📦 Build IPA
         working-directory: main
         run: |
+          sed -i "" "s|iphone:clang:16.5:14.0|iphone:clang:17.5:14.0|g" Makefile
           sed -i "" "s|iphone:latest:12.0|iphone:17.5:15.0|g" Tweaks/Alderis/Makefile
           gmake package
 
